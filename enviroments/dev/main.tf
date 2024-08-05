@@ -11,8 +11,21 @@ module "kafka" {
   kafka_broker_count  = 3
   kafka_instance_type = "kafka.m5.large"
   kafka_volume_size   = 1000
+  kafka_topic_name    = "${var.prefix}-stock-market-data"
+  s3_bucket_name      = module.s3.bucket_name
+  s3_bucket_arn       = module.s3.bucket_arn
+  aws_region          = var.aws_region
 }
 
+module "lambda" {
+  source                     = "../../modules/lambda"
+  prefix                     = "${var.prefix}-${var.account_id}"
+  environment                = var.environment
+  kafka_bootstrap_servers    = module.kafka.kafka_bootstrap_brokers
+  kafka_topic_name           = "${var.prefix}-stock-market-data"
+  stock_market_api_endpoint  = var.stock_market_api_endpoint
+  msk_cluster_arn            = module.kafka.kafka_cluster_arn
+}
 
 module "s3" {
   source      = "../../modules/s3"
