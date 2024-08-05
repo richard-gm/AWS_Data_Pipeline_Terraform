@@ -1,14 +1,14 @@
-output "kafka_broker_ips" {
-  description = "Private IPs of Kafka broker instances"
-  value       = aws_instance.kafka_broker[*].private_ip
+output "kafka_bootstrap_brokers" {
+  description = "Plaintext connection host:port pairs"
+  value       = aws_msk_cluster.kafka_cluster.bootstrap_brokers
 }
 
-output "zookeeper_ips" {
-  description = "Private IPs of ZooKeeper instances"
-  value       = aws_instance.zookeeper[*].private_ip
+output "kafka_zookeeper_connect_string" {
+  description = "ZooKeeper connection string"
+  value       = aws_msk_cluster.kafka_cluster.zookeeper_connect_string
 }
 
-output "kafka_lb_dns" {
-  description = "DNS name of the Kafka load balancer"
-  value       = aws_lb.kafka_lb.dns_name
+output "kafka_cluster_arn" {
+  description = "Amazon Resource Name (ARN) of the MSK cluster"
+  value       = aws_msk_cluster.kafka_cluster.arn
 }

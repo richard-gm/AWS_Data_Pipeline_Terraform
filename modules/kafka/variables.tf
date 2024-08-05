@@ -19,23 +19,19 @@ variable "prefix" {
 }
 
 variable "kafka_broker_count" {
-  description = "Number of Kafka broker instances"
+  description = "Number of Kafka broker nodes"
   type        = number
-  default     = 2
-}
-
-variable "kafka_ami" {
-  description = "AMI ID for Kafka instances"
-  type        = string
+  default     = 3
 }
 
 variable "kafka_instance_type" {
   description = "Instance type for Kafka brokers"
   type        = string
-  default     = "t3.medium"
+  default     = "kafka.m5.large"
 }
 
-variable "ssh_key_name" {
-  description = "SSH key name for EC2 instances"
-  type        = string
+variable "kafka_volume_size" {
+  description = "EBS volume size for Kafka brokers (in GB)"
+  type        = number
+  default     = 1000
 }
