@@ -35,3 +35,23 @@ variable "kafka_volume_size" {
   type        = number
   default     = 1000
 }
+
+variable "kafka_topic_name" {
+  description = "Name of the Kafka topic"
+  type        = string
+}
+
+variable "s3_bucket_name" {
+  description = "Name of the S3 bucket for data storage"
+  type        = string
+}
+
+variable "s3_bucket_arn" {
+  description = "ARN of the S3 bucket for data storage"
+  type        = string
+}
+
+variable "aws_region" {
+  description = "AWS region"
+  type        = string
+}
