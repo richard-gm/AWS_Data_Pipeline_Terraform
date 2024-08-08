@@ -15,7 +15,6 @@ module "kafka" {
   s3_bucket_name      = module.s3.bucket_name
   s3_bucket_arn       = module.s3.bucket_arn
   aws_region          = var.aws_region
-  suf
 }
 
 module "lambda" {

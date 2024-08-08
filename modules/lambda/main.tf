@@ -15,6 +15,11 @@ resource "aws_lambda_function" "data_producer" {
     }
   }
 
+  vpc_config {
+    subnet_ids         = var.subnet_ids
+    security_group_ids = [var.lambda_security_group_id]
+  }
+
   tags = {
     Name        = "${var.prefix}-stock-market-data-producer"
     Environment = var.environment
@@ -85,4 +90,49 @@ resource "aws_lambda_permission" "allow_eventbridge" {
   function_name = aws_lambda_function.data_producer.function_name
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.data_producer_trigger.arn
+}
+
+# Add this resource to the existing lambda/main.tf file
+
+resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  role       = aws_iam_role.lambda_role.name
+}
+
+resource "aws_iam_role_policy" "lambda_msk_full_access" {
+  name = "${var.prefix}-lambda-msk-full-access"
+  role = aws_iam_role.lambda_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "kafka:*"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "lambda_vpc_access" {
+  name = "${var.prefix}-lambda-vpc-access"
+  role = aws_iam_role.lambda_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ec2:CreateNetworkInterface",
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DeleteNetworkInterface"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      }
+    ]
+  })
 }
