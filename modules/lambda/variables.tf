@@ -27,3 +27,13 @@ variable "msk_cluster_arn" {
   description = "ARN of the MSK cluster"
   type        = string
 }
+
+variable "subnet_ids" {
+  description = "List of subnet IDs for Lambda VPC configuration"
+  type        = list(string)
+}
+
+variable "lambda_security_group_id" {
+  description = "ID of the security group for Lambda VPC configuration"
+  type        = string
+}
