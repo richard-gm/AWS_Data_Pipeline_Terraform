@@ -15,6 +15,7 @@ module "kafka" {
   s3_bucket_name      = module.s3.bucket_name
   s3_bucket_arn       = module.s3.bucket_arn
   aws_region          = var.aws_region
+  suf
 }
 
 module "lambda" {
@@ -25,6 +26,25 @@ module "lambda" {
   kafka_topic_name           = "${var.prefix}-stock-market-data"
   stock_market_api_endpoint  = var.stock_market_api_endpoint
   msk_cluster_arn            = module.kafka.kafka_cluster_arn
+  subnet_ids               = var.subnet_ids
+  lambda_security_group_id = aws_security_group.lambda_sg.id
+}
+
+resource "aws_security_group" "lambda_sg" {
+  name_prefix = "${var.prefix}-lambda-sg"
+  vpc_id      = var.vpc_id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name        = "${var.prefix}-lambda-sg"
+    Environment = var.environment
+  }
 }
 
 module "s3" {
